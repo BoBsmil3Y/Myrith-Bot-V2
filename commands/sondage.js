@@ -5,7 +5,7 @@ const {
 module.exports = {
 
   name: "sondage",
-  description: " ",
+  description: "Créer un embed avec la question indiqué. Les réactions sont automatiquement ajoutées.",
   usage: ".sondage <question>",
   permission: true,
   onlyAdmin: true,
@@ -14,9 +14,6 @@ module.exports = {
     if (!message.guild.member(message.author).hasPermission('ADMINISTRATOR')) return;
 
     const anounceChannel = message.guild.channels.cache.find(channel => channel.id === "737770503246184532"); // A changer (mettre annonce)
-
-    const emojiCheck = ("741393370328596520");
-    const emojiCross = ("741393381145575475");
 
     let question = "";
 
@@ -40,8 +37,8 @@ module.exports = {
       .setColor("#4bcffa");
 
     anounceChannel.send(questonEmbed).then(m => {
-      m.react(emojiCheck);
-      m.react(emojiCross);
+      m.react("741393370328596520"); //CheckEmoji
+      m.react("741393381145575475"); //CrossEmoji
     });
 
   }
