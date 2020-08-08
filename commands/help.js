@@ -26,7 +26,7 @@ module.exports = {
 
       if (command.onlyAdmin && author.hasPermission('ADMINISTRATOR')) helpEmbed.addField(`• ${command.name}  |  ADMIN`, `Utilisation : **${command.usage}** \nDescription : *${command.description}*`);
 
-      if (command.permission && staff) helpEmbed.addField(`• ${command.name}  |  STAFF`, `Utilisation : **${command.usage}** \nDescription : *${command.description}*`);
+      if (command.permission && staff && !command.onlyAdmin) helpEmbed.addField(`• ${command.name}  |  STAFF`, `Utilisation : **${command.usage}** \nDescription : *${command.description}*`);
 
       if (!command.permission && !command.onlyAdmin) helpEmbed.addField(`• ${command.name}`, `Utilisation : **${command.usage}** \nDescription : *${command.description}*`);
 
