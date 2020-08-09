@@ -1,0 +1,14 @@
+{
+
+  "Candidature": {
+    "questions": {
+      "1": "Pour quel rôle candidates-tu ?",
+      "2": "Quel âge as-tu ?",
+      "3": "Quelles études / quel métier fais-tu actuellement ?",
+      "4": "Quels horaires as-tu de disponible pour engendrer le rôle demandé ?",
+      "5": "Quelles sont tes expériences similaires à ce rôle ?",
+      "6": "Question 6 ?"
+    }
+  }
+
+}
