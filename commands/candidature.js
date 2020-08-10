@@ -10,94 +10,129 @@ module.exports = {
   usage: ".candidature",
   permission: false,
   onlyAdmin: false,
-  async execute(client, message, args) {
+  execute(client, message, args) {
 
     const guild = message.guild;
     const idCandidatures = guild.channels.cache.find(channel => channel.name === "🎓•candidatures");
     const idCategorie = idCandidatures.parent;
+    const member = message.author;
 
     let questionEmbed = new MessageEmbed().setTimestamp().setFooter("Myrith", client.user.avatarURL()).setColor("#4bcffa");
     let questions = [];
     let answers = [];
+    let size = Object.keys(json["Candidature"]["questions"]).length;
 
 
-    for (let i = 0; i < Object.keys(json["Candidature"]["questions"]).length; i++) {
+    for (let i = 0; i < size; i++) {
       questions.push(json["Candidature"]["questions"][i + 1]);
     }
 
-    if (guild.channels.find(channel => channel.name === `candidature-${m.author.id}`)) {
+    if (guild.channels.cache.find(channel => channel.name === `candidature-${member.id}`)) {
       message.reply("Vous avez déjà votre salon de candidature !");
       message.delete();
     }
 
 
-    m.guild.createChannel(
-      `candidature-${m.author.id}`, {
+    guild.channels.create(
+      `candidature-${member.id}`, {
         type: 'text',
-        topic: `Salon de candidature créé par ${m.author.username} | Id du joueur : ${m.author.id}`,
+        topic: `Salon de candidature créé par ${member.username} | Id du joueur : ${member.id}`,
         parent: idCategorie,
         permissionOverwrites: [{
-          id: m.guild.id,
+          id: guild.id,
           deny: ['VIEW_CHANNEL']
         }, {
-          id: m.author.id,
+          id: member.id,
           allow: ['VIEW_CHANNEL']
         }]
-      }).then(chan => {
+      }).then(channel => {
 
       questionEmbed
         .setTitle(`Voici ton salon pour effectuer ta candidature.`)
-        .setDescription(`Attention, tu devras lire attentivement les questions et y répondre en moins de 10 minutes chacunes! Soit le plus complet possible. Bonne chance <@${m.author.id}> !`);
+        .setDescription(`Attention, tu devras lire attentivement les questions et y répondre en moins de 15 minutes chacunes! Soit le plus complet possible. Bonne chance <@${member.id}> !`);
+
+      channel.send(questionEmbed);
 
       /* 
       Bouclé les questions selon 'questions' 
       Push les réponses,
       Envoyer le message dans le candidature + en Mp au joueur
       */
+      const questionCall = async function () {
+        for (let i = 0; i < size; i++) {
 
-      chan.send(questionEmbed);
+          questionEmbed = questionEmbed.setTitle(questions[i]).setTimestamp().setFooter(`Myrith - Question n°${i+1}/${size}`);
+          channel.send(questionEmbed); //const question = await 
+          const filter = response => response.author.id === member.id;
 
-      const filter = response => response.author.id === m.author.id;
+          const collected = await channel.awaitMessages(filter, {
+            max: 1,
+            time: 900000,
+          })
 
-      let question = new Discord.RichEmbed().setTitle(questions[0]).setTimestamp().setFooter(`Myrith - Question n°1/7`).setColor("#0fbcf9");
+          if (!collected.first()) {
 
-      chan.send(question)
-      chan.awaitMessages(filter, {
-        max: 1,
-        time: 600000
-      }).then(collected => {
+            const errorEmbed = new MessageEmbed()
+              .setTitle(`Candidature non-terminée de ${member.username}`)
+              .setDescription(`${member} voici ta candidature qui n'a pas été fini ! Tu peux te permettre de copier / coller tes anciens messages si tu veux recréer une candidature.`)
+              .setThumbnail(client.user.avatarURL())
+              .setFooter("Myrith", client.user.avatarURL())
+              .setColor("#ff5252");
 
-        answers.push(collected.first().content);
+            let i = 1;
 
-        let finalCandidature = new Discord.RichEmbed()
-          .setAuthor(`Candidature de ${m.author.username} pour le rôle ${answers[0]}`, bot.user.avatarURL)
-          .setTitle(questions[1])
-          .setDescription(answers[1])
-          .addField(questions[2], answers[2])
-          .addField(questions[3], answers[3])
-          .addField(questions[4], answers[4])
-          .addField(questions[5], answers[5])
-          .addField(questions[6], answers[6])
-          .setThumbnail(m.author.avatarURL)
+            answers.forEach(answer => {
+              errorEmbed.addField(`Question ${i}`, answer);
+              i++;
+            })
+
+            if (answers.length < 1) member.send(errorEmbed);
+            member.send(errorEmbed.setDescription(`${member}, tu n'as pas fini ta candidature, et nous n'avons trouvé aucune réponse de ta part ... As-tu eu un problème lors de la création de celle-ci ? Contacte le Staff au besoin !`))
+            break;
+
+          } else {
+            answers.push(collected.first().content);
+          }
+
+        }
+      }
+
+      questionCall().then(() => {
+
+        if (answers.length < 6) return;
+
+        let finalCandidature = new MessageEmbed()
+          .setAuthor(`Candidature de ${member.username} pour le rôle ${answers[0]}`, client.user.avatarURL())
+          .setThumbnail(member.avatarURL)
           .setTimestamp()
-          .setFooter(`Myrith - Candidature`, bot.user.avatarURL)
-          .setColor("#05c46b");
+          .setFooter("Myrith", client.user.avatarURL())
+          .setColor("#9980FA");
 
-        m.guild.channels.find(c => c.id === idAdminCandid).send(finalCandidature);
+        for (let j = 0; j < questions.length; j++) {
+          if (j < 2) finalCandidature.addField(questions[j], answers[j], true);
+          else finalCandidature.addField(questions[j], answers[j]);
+        }
 
-        m.author.send(`Voici votre candidature ${m.author.username} !`);
-        m.author.send(finalCandidature);
+        idCandidatures.send(finalCandidature);
+        member.send(finalCandidature);
 
-        chan.delete(5000);
+        finishEmbed = new MessageEmbed()
+          .setTitle(`Candidature finie !`)
+          .setDescription(`Elle va être envoyé au Staff et en MP de ton côté ! Tu auras une réponse sous 72h. Le channel va être supprimé dans quelques secondes...`)
+          .setTimestamp()
+          .setFooter("Myrith", client.user.avatarURL())
+          .setColor("#0be881");
 
+        channel.send(finishEmbed);
 
-      }).catch(() => {
-        m.author.send("Tu n'as pas répondu dans le temps indiqué ! Tu vas devoir recommencer. Retourne dans le salon pour effectuer la commande.");
-        chan.delete(5000);
+        setTimeout(() => {
+          channel.delete();
+        }, 10000);
+
       });
 
-
     });
+
 
   }
 
