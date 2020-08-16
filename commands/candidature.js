@@ -53,11 +53,6 @@ module.exports = {
 
       channel.send(questionEmbed);
 
-      /* 
-      Bouclé les questions selon 'questions' 
-      Push les réponses,
-      Envoyer le message dans le candidature + en Mp au joueur
-      */
       const questionCall = async function () {
         for (let i = 0; i < size; i++) {
 

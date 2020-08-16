@@ -24,6 +24,7 @@ client.on("ready", () => {
   console.log(`${client.user.username} est en ligne !`);
   client.user.setActivity("#𝘗𝘓𝘈𝘠.𝘔𝘠𝘙𝘐𝘛𝘏.COM 🥳");
 
+  //client.emit("guildMemberAdd", client);
 });
 
 client.on("message", message => {
@@ -39,7 +40,9 @@ client.on("message", message => {
 client.on("guildMemberAdd", member => {
 
   try {
-    let commandFile = require(`./auto/welcome.js`);
+    let commandFile = require(`./auto/memberCount.js`);
+    commandFile.execute(client, member);
+    commandFile = require(`./auto/welcome.js`);
     commandFile.run(client, member);
   } catch (error) {
     console.error(error);
@@ -50,8 +53,21 @@ client.on("guildMemberAdd", member => {
 client.on("guildMemberRemove", member => {
 
   try {
-    let commandFile = require(`./auto/goodbye.js`);
+    let commandFile = require(`./auto/memberCount.js`);
+    commandFile.execute(client, member);
+    commandFile = require(`./auto/goodbye.js`);
     commandFile.run(client, member);
+  } catch (error) {
+    console.error(error);
+  }
+
+});
+
+client.on("presenceUpdate", (oldPresence, newPresence) => {
+
+  try {
+    let commandFile = require(`./auto/onlineCount.js`);
+    commandFile.run(client, oldPresence, newPresence);
   } catch (error) {
     console.error(error);
   }

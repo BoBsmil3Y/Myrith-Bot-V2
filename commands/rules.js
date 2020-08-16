@@ -12,7 +12,6 @@ module.exports = {
   execute(client, message, args) {
 
     const rulesEmbed = new MessageEmbed()
-      .setColor("#0fbcf9")
       .setAuthor("📑  |  Règles Discord")
       .setDescription("*» Si vous êtes sur PC et que vous avez du mal à lire, cliquez sur l'image, puis cliquez sur 'Ouvrir l'original'*.")
       .attachFiles(['./images/rules.png'])

@@ -28,10 +28,6 @@ module.exports = {
       return;
     }
 
-    console.log(`Args ${args}`)
-    console.log(`Args ${args[1]}`)
-    console.log(`Raison ${why}`)
-
     const muteEmbed = new MessageEmbed()
       .setTitle("📢 Sanction Discord  |  Ban")
       .setDescription(`Tu as été banni du serveur Discord. Tes messages envoyés ces derniers jours ont été supprimé.`)
