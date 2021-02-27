@@ -5,7 +5,7 @@ const {
 module.exports = {
 
   name: "delete",
-  description: "Supprime le nombre de message demandé. Ne peut pas supprimer les messages de plus de 14 jours. Ne supprime pas les messages de bot.",
+  description: "Supprime le nombre de message demandé. Ne peut pas supprimer les messages de plus de 14 jours.",
   usage: ".delete <nombre>",
   permission: true,
   onlyAdmin: false,

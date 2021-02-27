@@ -1,4 +1,4 @@
-const Discord = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 
@@ -8,7 +8,7 @@ module.exports = {
     const guild = bot.guilds.cache.find(guild => guild.id === "659141545307406342");
     const welcomeChannel = guild.channels.cache.find(channel => channel.id === "737770503246184532");
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new MessageEmbed()
       .setTitle(`Un nouveau membre apparaît !`)
       .setDescription(`» Bienvenue à **${newMember.user.username}** sur le serveur Discord ! 🎉`)
       .setColor("#ff7844")

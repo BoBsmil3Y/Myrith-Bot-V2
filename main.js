@@ -28,6 +28,14 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+
+  try {
+    let commandFile = require(`./auto/mention.js`);
+    commandFile.run(client, message);
+  } catch (error) {
+    console.error(error);
+  }
+
   if (!message.content.startsWith(prefix) | message.author.client) return;
   const args = message.content.slice(prefix.length).split(/ +/);
   const command = args.shift().toLowerCase();
@@ -54,7 +62,7 @@ client.on("guildMemberRemove", member => {
 
   try {
     let commandFile = require(`./auto/memberCount.js`);
-    commandFile.execute(client, member);
+    commandFile.run(client, member);
     commandFile = require(`./auto/goodbye.js`);
     commandFile.run(client, member);
   } catch (error) {
