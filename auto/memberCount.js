@@ -1,12 +1,14 @@
+const config = require("../config.json");
+
 module.exports = {
 
   description: "Met à jour un compteur de membre.",
 
-  run: (client, member) => {
+  run: client => {
 
-    const guild = member.guild;
+    const server = client.guilds.cache.get(config.channels.dev.guild);
 
-    guild.channels.cache.get("742469804987777105").setName(`🔥\u2009\u2009•\u2009\u2009${guild.memberCount}\u2009\u2009membres.`);
+    server.channels.cache.get(config.channels.dev.memberCount).setName(`🔥\u2009\u2009•\u2009\u2009${server.memberCount}\u2009\u2009membres.`);
 
   }
 }
