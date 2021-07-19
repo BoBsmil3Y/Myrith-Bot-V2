@@ -1,6 +1,5 @@
-const {
-  MessageEmbed
-} = require("discord.js");
+const { MessageEmbed } = require("discord.js");
+const config = require("../config.json");
 
 module.exports = {
 
@@ -13,13 +12,8 @@ module.exports = {
 
     if (!message.guild.member(message.author).hasPermission('ADMINISTRATOR')) return;
 
-    const anounceChannel = message.guild.channels.cache.find(channel => channel.id === "737770503246184532"); // A changer (mettre annonce)
-
-    let question = "";
-
-    for (let i = 0; i < args.length; i++) {
-      question = question + args[i] + " ";
-    }
+    const anounceChannel = message.guild.channels.cache.get(config.channels.sondage);
+    const question = args.join(' ');
 
     if (!question) {
       message.author.send(`Tu as mal exécuté la commande. \nUsage : ${this.usage}. \nTa commande : ${message}`);
@@ -27,19 +21,24 @@ module.exports = {
       return;
     }
 
-    message.delete();
-
     const questonEmbed = new MessageEmbed()
       .setTitle("❔  |  Sondage")
       .addField(`Question :`, `${question} \n\n*Ajouter une réaction pour donner votre avis.*`)
       .setTimestamp()
       .setFooter(`Question posée par ${message.author.username}`, client.user.avatarURL())
-      .setColor("#4bcffa");
+      .setColor("#74b9ff");
 
-    anounceChannel.send(questonEmbed).then(m => {
-      m.react("741393370328596520"); //CheckEmoji
-      m.react("741393381145575475"); //CrossEmoji
-    });
+    anounceChannel.send(`<@&${config.roles.sondage}>`).then(() => {
+
+      anounceChannel.send(questonEmbed)
+        .then(m => {
+          m.react(config.emotes.check);
+          m.react(config.emotes.cross);
+        });
+
+    })
+
+    message.delete();
 
   }
 
