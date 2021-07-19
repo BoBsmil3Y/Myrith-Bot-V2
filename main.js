@@ -57,7 +57,6 @@ client.on("message", (message) => {
 });
 
 client.on("guildMemberAdd", (member) => {
-  console.log("déclencher add");
   try {
     let commandFile = require(`./auto/memberCount.js`);
     commandFile.run(client, member);
@@ -72,7 +71,6 @@ client.on("guildMemberRemove", (member) => {
   try {
     let commandFile = require(`./auto/memberCount.js`);
     commandFile.run(client, member);
-    console.log("commandFile 2");
     commandFile = require(`./auto/goodbye.js`);
     commandFile.run(client, member);
   } catch (error) {
