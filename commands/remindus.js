@@ -6,7 +6,7 @@ const config = require("../config.json");
 module.exports = {
 
     name: "remindus",
-    description: "Réduit au silence le membre donné.",
+    description: "Envoi un message pour un rôle donné afin de rappeler un événement.",
     usage: ".remindus <@role> <temps> <raison>",
     permission: true,
     onlyAdmin: false,
