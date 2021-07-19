@@ -1,6 +1,6 @@
-const {
-  MessageEmbed
-} = require("discord.js");
+const { MessageEmbed } = require("discord.js");
+const config = require("../config.json");
+
 
 module.exports = {
 
@@ -13,29 +13,26 @@ module.exports = {
     const mention = message.mentions.users.first();
 
     if (!mention) return;
-    if (!message.member.hasPermission("KICK_MEMBERS")) return;
+    if (!message.guild.members.cache.get(mention.id).hasPermission("KICK_MEMBERS")) return;
 
-    const guild = message.guild;
+    const categories = config.channels.categoryToTrackMention;
+    const idCategory = message.channel.parentID;
 
-    const category = ["659141545307406343", "659145015024680960", "742013658418118708"];
+    if (!categories.includes(idCategory)) return;
 
+    let actualCategory = message.guild.channels.cache.get(idCategory);
 
-    category.forEach(item => {
+    if (actualCategory.children.get(message.channel.id)) {
+      mentionEmbed = new MessageEmbed()
+        .setTitle(":man_detective:  Mention")
+        .setDescription(`${mention} a été mentionné par ${message.author} dans le salon ${message.channel}`)
+        .setTimestamp()
+        .setFooter("Myrith", client.user.avatarURL())
+        .setColor("#f1f2f6");
 
-      let actualCategory = guild.channels.cache.get(item);
-
-      if (actualCategory.children.get(message.channel.id)) {
-        mentionEmbed = new MessageEmbed()
-          .setTitle(":man_detective:  Mention")
-          .setDescription(`Tu as été mentionné par ${message.author} dans le salon ${message.channel}`)
-          .setTimestamp()
-          .setFooter("Myrith", client.user.avatarURL())
-          .setColor("#f1f2f6");
-
-        mention.send(mentionEmbed);
-      }
-
-    })
+      let logChannel = message.guild.channels.cache.get(config.channels.log);
+      logChannel.send(mentionEmbed);
+    }
 
   }
 }
