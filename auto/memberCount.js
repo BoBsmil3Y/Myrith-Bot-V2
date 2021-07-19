@@ -6,9 +6,9 @@ module.exports = {
 
   run: client => {
 
-    const server = client.guilds.cache.get(config.channels.dev.guild);
+    const server = client.guilds.cache.get(config.channels.guild);
 
-    server.channels.cache.get(config.channels.dev.memberCount).setName(`🔥\u2009\u2009•\u2009\u2009${server.memberCount}\u2009\u2009membres.`);
+    server.channels.cache.get(config.channels.memberCount).setName(`🔥\u2009\u2009•\u2009\u2009${server.memberCount}\u2009\u2009membres.`);
 
   }
 }
